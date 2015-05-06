@@ -1,0 +1,55 @@
+[sssd]
+config_file_version = 2
+debug_level = 0
+domains = EXAMPLE
+services = nss, pam
+
+[nss]
+filter_users = root,named,avahi,haldaemon,dbus,radiusd,news,nscd
+
+[pam]
+
+[domain/TELLIGEN]
+
+# LDAP BIND info
+ldap_uri = ldap://dc1.example.com/, ldap://dc2.example.com/
+ldap_search_base = dc=example,dc=com
+ldap_default_bind_dn = CN=aduser,CN=Users,DC=example,DC=com
+ldap_default_authtok = <%=@ldap_default_authtok%>
+ldap_schema = ad
+#ldap_schema = rfc2307bis
+# If nss info is slow and/or intermitent, set this to false and see if it helps
+#ldap_referrals = false
+
+# LDAP TLS certificate
+ldap_tls_reqcert = demand
+ldap_tls_cacert = /etc/openldap/certs/telligen-CA.crt
+
+# Access controls
+access_provider = ldap
+ldap_access_filter = memberOf=CN=linuxuser,CN=Users,DC=example,DC=com
+
+# ID provider info
+id_provider = ldap
+enumerate = true
+override_homedir = /home/%u
+ldap_user_object_class = user
+ldap_group_object_class = group
+ldap_user_principal = userPrincipalName
+ldap_user_fullname = displayName
+ldap_user_name = sAMAccountName
+ldap_user_home_directory = unixHomeDirectory
+ldap_id_mapping = false
+ldap_force_upper_case_realm = true
+cache_credentials = true
+case_sensitive = false
+
+# Authentication and change password provided by Kerberos
+chpass_provider = krb5
+auth_provider = krb5
+krb5_server = dc1.example.com, dc2.example.com, dc3.example.com
+krb5_realm = EXAMPLE.COM
+krb5_changepw_principle = kadmin/changepw
+krb5_ccachedir = /tmp
+krb5_ccname_template = FILE:%d/krb5cc_%U_XXXXXX
+krb5_auth_timeout = 15
