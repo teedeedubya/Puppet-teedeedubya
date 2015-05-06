@@ -1,0 +1,15 @@
+#!/usr/bin/python
+
+import json
+import subprocess
+
+if __name__ == '__main__':
+	p = subprocess.Popen("cat /proc/diskstats | awk '{print $3}' | grep -v 'ram\|loop\|sr'", shell=True, stdout=subprocess.PIPE)
+#	p = subprocess.Popen("cat /proc/diskstats | awk '{print $3}' | grep -E sda\|sdb\\", shell=True, stdout=subprocess.PIPE)
+	output = p.communicate()[0]
+	data = list()
+	for line in output.split("\n"):
+		if line:
+			data.append({"{#DEVICE}": line, "{#DEVICENAME}": line.replace("/dev/", "")})
+
+	print(json.dumps({"data": data}))
