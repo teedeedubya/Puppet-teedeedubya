@@ -1,0 +1,26 @@
+syslocation  YOU COMPANY LOCATION HERE
+syscontact admin@telligen.com
+sysname <%= fqdn %>
+
+agentAddress udp:<%= ipaddress %>:161
+rwcommunity rw2snmp
+
+disk / 10%
+disk /var/log 10%
+
+proc udevd 5 1
+proc crond 12 1
+proc sshd 20 1
+proc ntpd 2 1
+proc snmpd 5 1
+proc sssd 1 1
+proc sssd_be 1 1
+proc sssd_nss 1 1
+proc sssd_pam 1 1
+proc oddjobd 1 1
+proc rsyslog 1 1
+proc puppet 2 1
+
+load 4 4 4
+
+defaultMonitors yes
