@@ -1,0 +1,118 @@
+#!/bin/bash
+
+# Title: SSH key installation script
+# Description:  A quick and dirty script to check if
+# a user should have an ssh key installed on this server
+#
+# program flow:
+# pulls all users that have authenticated into this box by checking the home dir
+# does an 'id' on every one of those users to determine what groups their in
+# greps the output to determine if they should have access to this server
+# if the correct group is found, then it wgets the key down from tec-noc-noc04.telligen.us
+# then it generates .ssh dir and authorized_key file with the correct perms.
+#
+# Author: tony.wvoip@gmail.com
+
+#commands
+LS="/bin/ls"
+AWK="/bin/awk"
+GREP="/bin/grep"
+CHOWN="/bin/chown"
+CHMOD="/bin/chmod"
+TOUCH="/bin/touch"
+MKDIR="/bin/mkdir"
+ECHO="/bin/echo"
+CAT="/bin/cat"
+CURL="/usr/bin/curl"
+
+USERS=`$LS /home`
+
+for USER in $USERS
+  do
+    if [[ $(id $USER | $GREP "linuxuser") ]]; then
+
+	  if [[ $($LS -al /home | $GREP $USER | $AWK '{print $3}' | $GREP $USER) ]]
+      then
+        #User's home directory ownership is already correct
+        :
+      else
+        $CHOWN -R $USER:root /home/$USER
+      fi
+
+      #check if correct permissions are set on the user's home directory
+      if [[ $($LS -al /home/$USER/ | $GREP .ssh | $AWK '{print $1}' | $GREP "drwxr\-\x\-\-\-") ]]
+      then
+        #760 is already set on the this user's home directory
+        :
+      else
+        $CHMOD 755 /home/$USER/
+      fi
+
+      if [ ! -d "/home/$USER/.ssh" ]
+      then
+        $MKDIR /home/$USER/.ssh
+      fi
+
+      #check the owner of the .ssh directory
+      if [[ $($LS -al /home/$USER/ | $GREP .ssh | $AWK '{print $3}' | $GREP $USER) ]]
+      then
+        #owner is correct on the .ssh directory
+        :
+      else
+        $CHOWN $USER /home/$USER/.ssh
+      fi
+
+      #check if correct permissions are set on the .ssh direcotry
+      if [[ $($LS -al /home/$USER/ | $GREP .ssh | $AWK '{print $1}' | $GREP "drwxr\-\-r\-\-") ]]
+      then
+        #744 is already set on the .ssh directory
+        :
+      else
+        $CHMOD 744 /home/$USER/.ssh
+      fi
+
+      #check if the authorized keys file exists
+      if [ -e "/home/$USER/.ssh/authorized_keys" ]
+      then
+        #authorized_keys file exists
+        :
+      else
+        $TOUCH /home/$USER/.ssh/authorized_keys
+      fi
+
+      #check if the authorized keys file is owned by the correct user
+      if [[ $($LS -al /home/$USER/.ssh/ | $GREP authorized_keys | $AWK '{print $3}' | $GREP $USER) ]]
+      then
+        #owner is correct on the authorized_keys file
+        :
+      else
+        $CHOWN $USER /home/$USER/.ssh/authorized_keys
+      fi
+
+      #check if correct permissions are set on the .ssh direcotry
+      if [[ $($LS -al /home/$USER/.ssh/ | $GREP authorized_keys | $AWK '{print $1}' | $GREP "\-rw\-\-\-\-\-\-\-") ]];
+      then
+        #600 is already set on the authorized_keys file
+        :
+      else
+        $CHMOD 600 /home/$USER/.ssh/authorized_keys
+      fi
+
+      CURRENT_AUTH_KEY=`$CAT /home/$USER/.ssh/authorized_keys`
+      NEW_AUTH_KEY=`$CURL http://your_webserver_containing_public_keys.com/ssh_keys/$USER/id_rsa.pub`
+
+      if [[ $(echo $NEW_AUTH_KEY | $GREP "was not found") ]]
+      then
+        #nothing left to do as the user does not have a key stored on enterprise_resources
+        :
+      else
+        if [ "$CURRENT_AUTH_KEY" == "$NEW_AUTH_KEY" ]
+        then
+          #nothing to do as the keys match
+          :
+        else
+          $ECHO $NEW_AUTH_KEY > /home/$USER/.ssh/authorized_keys
+        fi
+      fi
+    fi
+  done
