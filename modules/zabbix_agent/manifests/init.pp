@@ -2,7 +2,9 @@
 #
 # Configures zabbix-agent (system monitoring)
 #
-class zabbix_agent {
+class zabbix_agent (
+  $master_ip = "172.17.2.15"
+) {
   require dns_client
   require yum
   
@@ -61,5 +63,22 @@ class zabbix_agent {
 	mode    => 0755,
 	require => Package['zabbix-agent'],
     content => template("$module_name/jolokia_jmx_read.py.erb"),
+  }
+  file { '/opt/telligen/scripts/zapache':
+    ensure  => present,
+	owner   => root,
+	group   => root,
+	mode    => 0755,
+	require => Package['zabbix-agent'],
+    content => template("$module_name/zapache.erb"),
+  }
+  file { '/etc/zabbix/zabbix_agentd.d/userparameter_zapache.conf':
+    ensure  => present,
+	owner   => root,
+	group   => root,
+	mode    => 0644,
+    notify  => Service[zabbix-agent],
+	require => Package['zabbix-agent'],
+    content => template("$module_name/userparameter_zapache.conf.erb"),
   }
 }

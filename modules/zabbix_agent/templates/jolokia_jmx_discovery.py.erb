@@ -36,9 +36,11 @@ page = opener.open(url).read()
 #put in the response dictionary
 resp_dict = json.loads(page)
 
-#log what happened, this is for testing
-#if resp_dict['status']!=200:
-#        open("/var/log/zabbix/jolokia_jmx_discovery.log","a+").write(str(time.time()) + " " + str(resp_dict['status']) + " " + url + "\n")
+#log what happened, this is for testing.  Also let Zabbix know that the item sent was not supported.
+if resp_dict['status']!=200:
+	print("ZBX_NOTSUPPORTED")
+	exit()
+#	open("/var/log/zabbix/jolokia_jmx.log","a+").write(str(time.time()) + " " + str(resp_dict['status']) + " " + url + "\n")
 
 #print out the requested value
 
