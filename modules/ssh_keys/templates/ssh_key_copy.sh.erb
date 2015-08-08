@@ -11,7 +11,7 @@
 # if the correct group is found, then it wgets the key down from tec-noc-noc04.telligen.us
 # then it generates .ssh dir and authorized_key file with the correct perms.
 #
-# Author: tony.wvoip@gmail.com
+# Author: twelder@telligen.com
 
 #commands
 LS="/bin/ls"
@@ -31,7 +31,7 @@ for USER in $USERS
   do
     if [[ $(id $USER | $GREP "linuxuser") ]]; then
 
-	  if [[ $($LS -al /home | $GREP $USER | $AWK '{print $3}' | $GREP $USER) ]]
+	  if [[ $($LS -al /home | $GREP $USER | awk '{print $3}' | grep $USER) ]]
       then
         #User's home directory ownership is already correct
         :
@@ -99,7 +99,7 @@ for USER in $USERS
       fi
 
       CURRENT_AUTH_KEY=`$CAT /home/$USER/.ssh/authorized_keys`
-      NEW_AUTH_KEY=`$CURL http://your_webserver_containing_public_keys.com/ssh_keys/$USER/id_rsa.pub`
+      NEW_AUTH_KEY=`$CURL <%=@url -%>/ssh_keys/$USER/id_rsa.pub`
 
       if [[ $(echo $NEW_AUTH_KEY | $GREP "was not found") ]]
       then

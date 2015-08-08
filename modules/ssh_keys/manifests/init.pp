@@ -2,7 +2,9 @@
 #
 # Configures ssh keys for passwordless access for authorized groups
 #
-class ssh_keys {
+class ssh_keys (
+$url = "http://enterprise_resources.telligen.us"
+) {
   file { "/opt/telligen":
     ensure => "directory",
 	owner  => "root",
@@ -27,5 +29,6 @@ class ssh_keys {
     exec {'check ssh keys':
 	command  => "/opt/telligen/scripts/ssh_key_copy.sh",
 	user     => root,
+	loglevel => debug,
   }
 }
