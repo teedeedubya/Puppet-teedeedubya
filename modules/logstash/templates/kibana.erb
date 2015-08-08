@@ -1,0 +1,82 @@
+#! /bin/bash
+# Kibana: Init script for the logstash web interface
+#
+# chkconfig: - 98 02
+#
+# description: Web front end to Logstash
+# processname: Kibana
+
+programName=Kibana
+programHome=/opt/kibana
+programExec=/bin/kibana
+
+#commands
+PS="/bin/ps"
+GREP="/bin/grep"
+AWK="/bin/awk"
+ECHO="/bin/echo"
+NOHUP="/usr/bin/nohup"
+SUDO="/usr/bin/sudo"
+KILL="/bin/kill"
+DAEMONIZE="/usr/sbin/daemonize"
+
+
+start(){
+        PID=`$PS aux | $GREP kibana.js | $GREP -v $GREP | $AWK '{print $2}'`
+
+        if [ -n "$PID" ];
+        then
+                $ECHO "${programName} is already running! [${PID}]"
+                return 1
+        else
+                $ECHO "Starting ${programName}..."
+                $DAEMONIZE ${programHome}${programExec} > /dev/null 2>&1 &
+				return 0
+        fi
+
+}
+stop(){
+        PID=`$PS aux | $GREP kibana.js | $GREP -v $GREP | $AWK '{print $2}'`
+
+        $ECHO "Stopping ${programName}..."
+        if [ -z "$PID" ];
+        then
+                $ECHO "${programName} already stopped!"
+				return 0
+        else
+                $SUDO $KILL -9 $PID
+				return 0
+        fi
+}
+status(){
+        PID=`$PS aux | $GREP kibana.js | $GREP -v $GREP | $AWK '{print $2}'`
+
+        if [ -n "$PID" ];
+        then
+                $ECHO "${programName} is running [${PID}]"
+                return 0
+        else
+                $ECHO "${programName} is not running!"
+                return 3
+        fi
+}
+
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop
+        ;;
+  status)
+        status
+        ;;
+  restart)
+        stop
+        start
+        ;;
+  *)
+        $ECHO "Usage: ${programName} {start|stop|restart|status}"
+        return 2
+esac

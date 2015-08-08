@@ -1,0 +1,46 @@
+#logstash http -> https
+<Virtualhost *:80>
+  ServerAlias <%= fqdn %>
+  ServerAlias <%= hostname %>
+  ErrorLog /var/log/httpd/error.log
+  CustomLog /var/log/httpd/access.log combined
+  RewriteEngine On
+  RewriteCond %{SERVER_PORT} !443
+  RewriteRule (.*)$ https://<%= fqdn %>$1 [R,L]
+</VirtualHost>
+
+#logstash SSL
+<Virtualhost *:443>
+  SSLEngine on
+  SSLCertificateFile /etc/httpd/ssl/telligen.us.crt
+  SSLCertificateKeyFile /etc/httpd/ssl/telligen.us.key
+  SSLCertificateChainFile /etc/httpd/ssl/gd_bundle.crt
+  SetEnvIf User-Agent ".*MSIE.*" nokeepalive ssl-unclean-shutdown
+  CustomLog logs/ssl_request_log \
+   "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
+  ServerName <%= fqdn %>
+  ServerAlias <%= hostname %>
+  ErrorLog /var/log/httpd/error.log
+  CustomLog /var/log/httpd/access.log combined
+  DocumentRoot /var/www/html
+
+  RewriteEngine on
+  ProxyPreserveHost On
+  ProxyRequests Off
+  ProxyPass / http://127.0.0.1:5601/
+  ProxyPassReverse / http://127.0.0.l:5601/
+  <Location />
+    Order allow,deny
+    Allow from all
+    AuthType Basic
+    AuthName "Logstash Login"
+    AuthBasicProvider ldap
+    AuthzLDAPAuthoritative on
+    AuthLDAPURL "ldap://dc1.telligen.us:389/CN=Users,DC=telligen,DC=us?sAMAccountName?sub"
+    AuthLDAPBindDN "CN=aduser,CN=Users,DC=telligen,DC=us"
+    AuthLDAPBindPassword P50MW9HtZ6vJgFwbRLsO
+    AuthLDAPGroupAttributeIsDN on
+    AuthLDAPGroupAttribute member
+    Require ldap-group CN=linuxuser,CN=Users,DC=telligen,DC=us
+  </Location>
+</VirtualHost>
