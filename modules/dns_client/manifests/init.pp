@@ -3,7 +3,10 @@
 #
 
 class dns_client (
-$enabled = 'true'
+  $enabled = "true",
+  $domain = "example.com",
+  $search_path = "example.com",
+  $nameservers = ["1.1.1.1,"2.2.2.2" ,"3.3.3.3"]
 ){
 
   if $enabled == "true" {
