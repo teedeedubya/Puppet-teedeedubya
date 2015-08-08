@@ -10,8 +10,11 @@ class ntp_client {
   ->
   file { "/etc/ntp.conf":
     ensure => present,
+	owner   => "root",
+	group   => "wheel",
     mode   => '644',
     source => "puppet:///modules/$module_name/ntp.conf",
+	require => Package["ntp"],
   }
   ~>
   service { "ntpd":
