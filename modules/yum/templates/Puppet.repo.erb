@@ -1,13 +1,13 @@
 [puppetlabs-products]
 name=Puppet Labs Products El 6 - $basearch
-baseurl=http://yum.telligen.us/puppetlabs-products/
+baseurl=<%=@baseurl -%>/puppetlabs-products/
 gpgkey=file:///etc/pki/rpm-gpg/TELLIGEN-GPG-KEY
 enabled=1
 gpgcheck=1
 
 [puppetlabs-deps]
 name=Puppet Labs Dependencies El 6 - $basearch
-baseurl=http://yum.telligen.us/puppetlabs-deps/
+baseurl=<%=@baseurl -%>/puppetlabs-deps/
 gpgkey=file:///etc/pki/rpm-gpg/TELLIGEN-GPG-KEY
 enabled=1
 gpgcheck=1
