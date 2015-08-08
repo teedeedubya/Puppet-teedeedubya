@@ -1,0 +1,15 @@
+mysql - nproc unlimited
+mysql - nofile 16384
+jboss - nproc unlimited
+jboss - nofile 16384
+tomcat - nproc unlimited
+tomcat - nofile 16384
+postgres - nproc unlimited
+postgres - nofile 16384
+
+#NIST recommendation on limiting coredumps
+set domain '*'
+set domain/type hard
+set domain/item core
+set domain/value 0
+* hard core 0

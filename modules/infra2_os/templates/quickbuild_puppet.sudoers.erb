@@ -1,0 +1,7 @@
+#
+# sudoers file for the quickbuild group
+# WARNING: This file is managed by Puppet.  Changes will get overwritten when puppet runs.
+#
+Defaults:quickbuild !requiretty
+
+quickbuild ALL = NOPASSWD: /usr/bin/puppet agent *
