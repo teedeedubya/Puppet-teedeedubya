@@ -33,6 +33,8 @@ class fw_base (
     firewall { '100 allow SSH in':          port => '22', proto => tcp, action => accept }
     firewall { '101 allow SNMP in':         port => '161', proto => udp, action => accept }
     firewall { '102 allow Zabbix in':       port => '10050', proto => tcp, action => accept }
+    firewall { '103 allow GridMonitor OEM in':       port => '3872', proto => tcp, action => accept }
+	
 
     ### OUTPUT rules
     firewall { '300 allow Puppet out':         chain => 'OUTPUT', port => '8140', proto => tcp, action => accept }
@@ -50,6 +52,8 @@ class fw_base (
     firewall { '312 allow Kerberos out':       chain => 'OUTPUT', port => '88', proto => tcp, action => accept }
     firewall { '313 allow Kerberos Admin out': chain => 'OUTPUT', port => '749', proto => udp, action => accept }
     firewall { '315 allow Zabbix out':         chain => 'OUTPUT', port => '10051', proto => tcp, action => accept }
-    firewall { '316 allow Commvault out':      chain => 'OUTPUT', port => '8600-8610', proto => tcp, action => accept } 
+    firewall { '316 allow Commvault out':      chain => 'OUTPUT', port => '8600-8610', proto => tcp, action => accept }
+	firewall { '317 allow GridMonitor OEM out':      chain => 'OUTPUT', port => '4903', proto => tcp, action => accept }
+
   } 
 }

@@ -39,5 +39,6 @@ class fw_base::post {
    firewall { "994 drop everything else (after logging them)":
      chain  => 'LOGGING',
 	 action => 'drop',
+	 proto => 'all',
    }
 }
