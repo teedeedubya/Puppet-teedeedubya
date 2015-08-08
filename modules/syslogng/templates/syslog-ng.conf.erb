@@ -17,6 +17,7 @@ options {
         use_fqdn (no);
         create_dirs (no);
         keep_hostname (yes);
+		perm (0644);
 };
 
 source s_sys {
@@ -29,10 +30,10 @@ source s_sys {
 destination d_cons { file("/dev/console"); };
 destination d_mesg { file("/var/log/messages"); };
 destination d_auth { file("/var/log/secure"); };
-destination d_mail { file("/var/log/maillog" flush_lines(10)); };
-destination d_spol { file("/var/log/spooler"); };
+destination d_mail { file("/var/log/maillog" flush_lines(10) perm (0644)); };
+destination d_spol { file("/var/log/spooler" perm (0644)); };
 destination d_boot { file("/var/log/boot.log"); };
-destination d_cron { file("/var/log/cron"); };
+destination d_cron { file("/var/log/cron" perm (0644)); };
 destination d_kern { file("/var/log/kern"); };
 destination d_mlal { usertty("*"); };
 

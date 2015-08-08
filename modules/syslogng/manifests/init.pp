@@ -19,6 +19,7 @@ class syslogng (
       enable     => false,
       ensure     => stopped,
     } ->
+	package { 'rsyslog': ensure => 'absent', } ->
     file { '/etc/syslog-ng/syslog-ng.conf':
       ensure  => present,
 	  owner   => root,
