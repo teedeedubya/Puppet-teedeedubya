@@ -1,0 +1,16 @@
+LoadModule status_module modules/mod_status.so
+
+Listen 127.0.0.1:13336
+
+<VirtualHost 127.0.0.1:13336>
+	DocumentRoot /var/www/html
+	<Directory /var/www/html>
+			RewriteEngine Off
+			AllowOverride None
+	</Directory>
+	<Location /server-status>
+			SetHandler server-status
+			Allow from all
+	</Location>
+</VirtualHost>
+ExtendedStatus On
