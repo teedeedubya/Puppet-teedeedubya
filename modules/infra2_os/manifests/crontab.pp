@@ -7,62 +7,71 @@ class infra2_os::crontab {
     command  => "logger 'Puppet Crontab placeholder. Maybe put something useful here someday!'",
     user     => root,
     month    => '1',
-	monthday => '1',
-	hour     => '1',
-	minute   => '1',
+    monthday => '1',
+    hour     => '1',
+    minute   => '1',
   }
   if ($productname == 'VMware Virtual Platform'){
     file {'/etc/cron.d/raid-check':
       ensure => 'absent',
-	}  
+    }  
   }
 
-# CCE-4304-2, CCE-3833-1, CCE-3604-6, CCE-3626-9, CCE-4022-0
-# CCE-3851-3, CCE-3481-9, CCE-4322-4, CCE-4203-6, CCE-4379-4
-# CCE-4054-3, CCE-4441-2, CCE-4250-7, CCE-4331-5, CCE-4106-1
-# CCE-4450-3, CCE-4388-5, CCE-3983-4, CCE-4380-2, CCE-4212-7,
-# CCE-4251-5
-# Restrict permissions on cron files
+  # CCE-4304-2, CCE-3833-1, CCE-3604-6, CCE-3626-9, CCE-4022-0
+  # CCE-3851-3, CCE-3481-9, CCE-4322-4, CCE-4203-6, CCE-4379-4
+  # CCE-4054-3, CCE-4441-2, CCE-4250-7, CCE-4331-5, CCE-4106-1
+  # CCE-4450-3, CCE-4388-5, CCE-3983-4, CCE-4380-2, CCE-4212-7,
+  # CCE-4251-5
+  # Restrict permissions on cron files
   file {
     "/etc/crontab":
       owner => "root",
       group => "root",
-      mode  => 600;
+      mode  => '600';
     "/etc/anacrontab":
       owner => "root",
       group => "root",
-      mode  => 600;
+      mode  => '600';
     "/etc/cron.hourly":
       owner => "root",
       group => "root",
-      mode  => 700;
+      mode  => '700';
     "/etc/cron.daily":
       owner => "root",
       group => "root",
-      mode  => 700;
+      mode  => '700';
     "/etc/cron.weekly":
       owner => "root",
       group => "root",
-      mode  => 700;
+      mode  => '700';
     "/etc/cron.monthly":
       owner => "root",
       group => "root",
-      mode  => 700;
+      mode  => '700';
     "/etc/cron.d":
       owner => "root",
       group => "root",
-      mode  => 700;
+      mode  => '700';
     "/var/spool/cron":
       owner => "root",
       group => "root",
-      mode  => 600;
+      mode  => '600';
   }
 
   #CIS CentOS Benchmark
   #enable crond
   service {
     "crond":
-    ensure  => true,
-    enable  => true,
+      ensure  => true,
+      enable  => true,
+  }
+  
+  #Drop croncheck shell script on file system
+  file {'/opt/telligen/scripts/croncheck.sh':
+    ensure  => present,
+    owner   => root,
+    group   => root,
+    mode    => '700',
+    content => template("$module_name/croncheck.sh.erb"),
   }
 }

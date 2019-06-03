@@ -8,7 +8,7 @@ class infra2_os::motd {
     ensure  => present,
 	owner   => root,
 	group   => root,
-	mode    => 0644,
+	mode    => '0644',
     content => template("$module_name/motd.erb"),
   }
   file { 'copy over issue.net':
@@ -16,7 +16,15 @@ class infra2_os::motd {
     ensure  => present,
 	owner   => root,
 	group   => root,
-	mode    => 0644,
+	mode    => '0644',
+    content => template("$module_name/motd.erb"),
+  }
+  file { 'removing OS information from /etc/issue':
+    path    => '/etc/issue',
+    ensure  => present,
+	owner   => root,
+	group   => root,
+	mode    => '0644',
     content => template("$module_name/motd.erb"),
   }
 }

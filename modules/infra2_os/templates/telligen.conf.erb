@@ -1,0 +1,16 @@
+# Managed by Puppet
+mysql - nproc unlimited
+mysql - nofile 16384
+jboss - nproc unlimited
+jboss - nofile 16384
+tomcat - nproc unlimited
+tomcat - nofile 65536
+postgres - nproc unlimited
+postgres - nofile 16384
+oracle - nproc unlimited
+oracle - nofile 16384
+apache - nproc unlimited
+apache - nofile 16384
+
+#limit core dumps INFRA-323
+* hard core 0

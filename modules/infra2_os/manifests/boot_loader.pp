@@ -6,16 +6,16 @@
 class infra2_os::boot_loader {
   file { "/boot/grub/grub.conf":
     ensure => present,  
-  	owner  => root,
-	group  => root,
+    owner  => root,
+    group  => root,
     mode   => '0600',
   }
   file { 'require login for single user mode':
     path	=> '/etc/sysconfig/init',
-	ensure	=> present,
-	owner	=> root,
-	group	=> root,
-	mode	=> 0644,
-	content	=> template("infra2_os/init.erb"),
+    ensure	=> present,
+    owner	=> root,
+    group	=> root,
+    mode	=> '0644',
+    content	=> template("infra2_os/init.erb"),
   }
 }

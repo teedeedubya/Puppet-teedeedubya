@@ -6,7 +6,7 @@
 class infra2_os::disable_avahi {
   service {
     "avahi-daemon":
-    ensure  => false,
-    enable  => false,
+      ensure  => false,
+      enable  => false,
   }
 }

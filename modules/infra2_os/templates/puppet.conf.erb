@@ -1,18 +1,20 @@
+# Managed by Puppet
 [main]
     # The Puppet log directory.
     # The default value is '$vardir/log'.
-    logdir = /var/log/puppet
+    logdir = /var/log/<%=@puppetname%>
 
     # Where Puppet PID files are kept.
     # The default value is '$vardir/run'.
-    rundir = /var/run/puppet
+    rundir = /var/run/<%=@puppetname%>
 
     # Where SSL certificates are kept.
     # The default value is '$confdir/ssl'.
     ssldir = $vardir/ssl
 
-    server = dmnocppup01.telligen.us
+    server = <%=@masterhost%>
     puppetsync = true
+    priority = 10
 
 [agent]
     # The file in which puppetd stores a list of the classes
@@ -28,3 +30,4 @@
     localconfig = $vardir/localconfig
     runinterval = <%=@run_interval%>
     environment = <%=@environment%>
+

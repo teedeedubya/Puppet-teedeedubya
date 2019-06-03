@@ -22,7 +22,7 @@ class infra2_os::quickbuild_user {
     ensure  => present,
     owner   => root,
     group   => root,
-    mode    => 0640,
+    mode    => '0640',
     content => template("$module_name/quickbuild_puppet.sudoers.erb"),
   }
   
@@ -35,10 +35,10 @@ class infra2_os::quickbuild_user {
   ssh_authorized_key { 'quickbuild_key':
     name    => quickbuild_key,
     ensure  => present,
-    key     => 'the ssh public key goes here',
+    key     => 'replace me',
     type    => rsa,
     user    => quickbuild,
-    require => user['quickbuild'];
+    require => User['quickbuild'];
   }
   
   

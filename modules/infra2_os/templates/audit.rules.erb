@@ -1,3 +1,4 @@
+# Managed by Puppet
 # This file contains the auditctl rules that are loaded
 # whenever the audit daemon is started via the initscripts.
 # The rules are simply the parameters that would be passed
@@ -17,3 +18,65 @@
 -a always,exit -F arch=b64 -S clock_settime -k time-change
 -a always,exit -F arch=b32 -S clock_settime -k time-change
 -w /etc/localtime -p wa -k time-change
+
+# Required for CIS CentOS Security Benchmark 4.2.5
+# INFRA-1839
+-w /etc/group -p wa -k identify
+-w /etc/passwd -p wa -k identify
+-w /etc/gshadow -p wa -k identify
+-w /etc/shadow -p wa -k identify
+-w /etc/security/opasswd -p wa -k identify
+
+# Required for CIS CentOS Security Benchmark 4.2.6
+# INFRA-1818
+-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale
+-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale
+-w /etc/issue -p wa -k system-locale
+-w /etc/issue.net -p wa -k system-locale
+-w /etc/hosts -p wa -k system-locale
+-w /etc/sysconfig/network -p wa -k system-locale
+
+# Required for CIS CentOS Security Benchmark 4.2.7
+# INFRA-1840
+-w /etc/selinux/ -p wa -k MAC-policy
+
+# Required for CIS CentOS Security Benchmark 4.2.10
+# INFRA-1817
+-a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+
+# Required for CIS CentOS Security Benchmark 4.2.11
+# INFRA-1815
+-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k access 
+-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k access 
+-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k access 
+-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k access
+
+# Required for CIS CentOS Security Benchmark 4.2.14
+# INFRA-1849
+-a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete
+-a always,exit -F arch=b32 -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete
+
+# Required for CIS CentOS Security Benchmark 4.2.15
+# INFRA-1848
+-w /etc/sudoers -p wa -k scope
+
+# Required for CIS CentOS Security Benchmark 4.2.16
+# INFRA-1850
+-w /var/log/sudo.log -p wa -k actions
+
+# Required for CIS CentOS Security Benchmark 4.2.17
+# INFRA-1825
+-w /sbin/insmod -p x -k modules
+-w /sbin/rmmod -p x -k modules
+-w /sbin/modprobe -p x -k modules
+-a always,exit -F arch=b64 -S init_module -S delete_module -k modules 
+
+# Must Be LAST ENTRY!! Makes Audit Configuration immutable
+# Required for CIS CentOS Security benchmark 4.2.18
+# INFRA-1829
+-e 2

@@ -1,0 +1,37 @@
+#!/bin/bash
+# Managed by Puppet
+# Description: puppet helper script to verify if the ownership in /home/* is correct.
+# I was unable to find a way to script this inside of Puppet DSL as a one liner.
+# The entire point of the script is to ensure that the home directory ownership
+# piece in puppet is idempotent.
+#
+# Author: Tony Welder
+#
+# CIS Centos Security Benchmarks addressed with this script:
+# 9.2.13
+LS='/bin/ls'
+STAT='/usr/bin/stat'
+ID='/usr/bin/id'
+ECHO='/bin/echo'
+AWK='/bin/awk'
+
+for dir in `$LS /home/`; do
+  dir_ownership=`$STAT --format=%U:%G /home/${dir}`
+  if [ "$dir_ownership" != "${dir}:root" ]; then
+    #check if there's a valid user for this direcory
+    id_output=`$ID ${dir} 2> /dev/null`
+    id_return_code="$?"
+    if [ $id_return_code -ne 0 ]; then
+      #there is no valid user, this dir needs to be root:root
+      if [ "root:root" != "$dir_ownership" ]; then
+        exit 1
+      fi
+    else
+      #user exists then directory ownership is wrong
+      exit 1
+    fi
+  fi
+done
+#if you get here without any directory permission findings, we return a 0
+#.... which means all directory permissions are good -_-
+exit 0

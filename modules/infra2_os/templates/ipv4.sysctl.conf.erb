@@ -1,0 +1,37 @@
+# Managed by Puppet
+# Controls IP packet forwarding
+# CIS CentOS Linux Security Benchmark INFRA-328
+net.ipv4.ip_forward = 0
+
+# Disable Send Packet Redirects INFRA-329
+net.ipv4.conf.default.send_redirects=0
+
+# CIS Security Benchmark 5.2.8 INFRA-1827
+net.ipv4.tcp_syncookies = 1
+
+# Enable Bad Error Message Protection
+# CIS Security Benchmark 5.2.6 INFRA-1758
+net.ipv4.icmp_ignore_bogus_error_responses = 1
+
+# Enable RFC-recommended Source Route Validation
+# CIS Security Benchmark 5.2.7 INFRA-1831
+net.ipv4.conf.all.rp_filter = 1
+net.ipv4.conf.default.rp_filter = 1
+
+# Disable Source Routed Packet Acceptance
+# CIS Security Benchmark 5.2.1 INFRA-1855
+net.ipv4.conf.default.accept_source_route = 0
+net.ipv4.conf.all.accept_source_route = 0
+
+# Disable Source Routed Packet Acceptance
+# CIS Security Benchmark 5.2.2 INFRA-2005
+net.ipv4.conf.all.accept_redirects = 0
+net.ipv4.conf.default.accept_redirects = 0
+
+# Disable Source Routed Packet Acceptance
+# CIS Security Benchmark 5.2.3 INFRA-2006
+net.ipv4.conf.all.secure_redirects = 0
+net.ipv4.conf.default.secure_redirects = 0
+
+# CIS Security Benchmark 5.2.5 INFRA-3060
+net.ipv4.icmp_echo_ignore_broadcasts= 1

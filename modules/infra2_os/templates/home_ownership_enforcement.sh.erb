@@ -1,0 +1,33 @@
+#!/bin/bash
+# Managed by Puppet
+# Description: enforces proper home directory ownership and group upon everyone
+#
+# Author: Tony Welder
+#
+# CIS Centos Security Benchmarks addressed with this script:
+# 9.2.13
+LS='/bin/ls'
+STAT='/usr/bin/stat'
+ID='/usr/bin/id'
+ECHO='/bin/echo'
+AWK='/bin/awk'
+CHOWN='/bin/chown'
+
+for dir in `$LS /home/`; do
+  dir_ownership=`$STAT --format=%U:%G /home/${dir}`
+  if [ "$dir_ownership" != "${dir}:root" ]; then
+    #check if there's a valid user for this direcory
+    id_output=`$ID ${dir} 2> /dev/null`
+    id_return_code="$?"
+    if [ $id_return_code -ne 0 ]; then
+      #there is no valid user, this dir needs to be root:root
+      if [ "root:root" != "$dir_ownership" ]; then
+        $CHOWN root:root /home/$dir
+      fi
+    else
+      $CHOWN $dir:root /home/$dir
+    fi
+  fi
+done
+
+exit 0

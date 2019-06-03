@@ -10,7 +10,7 @@ class infra2_os::selinux {
     ensure  => present,
 	owner   => root,
 	group   => root,
-	mode    => 0644,
+	mode    => '0644',
     content => template("$module_name/config.erb"),
   }
 }

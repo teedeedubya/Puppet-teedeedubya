@@ -7,7 +7,7 @@ class infra2_os::limitsd {
     ensure  => present,
 	owner   => root,
 	group   => root,
-	mode    => 0644,
-    content => template("$module_name/custom.conf.erb"),
+	mode    => '0644',
+    content => template("$module_name/telligen.conf.erb"),
   } 
 }
